@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "myelin",
+  "version": "0.1.0",
+  "name": "Myelin",
+  "license": "GPL-3.0-only",
+  "icon": "assets/myelin/icon.png",
+  "description": "A chunk generator that shouldn't exist",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.me.nullframe.myelin.MyelinMod"
+    ],
+    "client": [
+      "com.me.nullframe.myelin.client.MyelinClient"
+    ]
+  },
+  "mixins": [
+    "myelin.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.17.0",
+    "minecraft": "1.21.1",
+    "fabric-api": "*",
+    "yet_another_config_lib_v3": ">=3.8.1",
+    "nullframe-core": ">=0.1.1",
+    "java": ">=21"
+  }
+}
+

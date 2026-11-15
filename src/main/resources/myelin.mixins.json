@@ -1,0 +1,24 @@
+{
+  "required": true,
+  "package": "com.me.nullframe.myelin.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ChunkGeneratorMixin",
+    "ChunkGeneratingMixin",
+    "NoiseChunkGeneratorMixin",
+    "ServerChunkLoadingManagerMixin",
+    "ServerChunkLoadingManagerAccessor",
+    "ServerChunkManagerAccessor",
+    "ServerPlayerInteractionManagerMixin",
+    "StructureAccessorAccessor",
+    "ChunkAccessor"
+  ],
+  "client": [
+    "ClientPlayNetworkHandlerMixin",
+    "GameMenuScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
+
