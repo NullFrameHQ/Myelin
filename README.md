@@ -16,7 +16,7 @@ And it's not "Just a few percent faster" or "Does not look like Vanilla at all".
 
 ## Dependency on NullFrame Core
 
-NullFrame Core handles terrain generation for Myelin. I made it a separate mod so other developers can use its tools too.
+[NullFrame Core](https://github.com/NullFrameHQ/NullFrame-Core) handles terrain generation for Myelin. I made it a separate mod so other developers can use its tools too.
 
 # Live World Generation
 
