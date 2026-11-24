@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Known issues and limitations
+    url: https://github.com/NullFrameHQ/myelin#what-is-the-catch
+    about: Read this before reporting a problem. Some limitations are already documented.
+  - name: Multiplayer limitations
+    url: https://github.com/NullFrameHQ/myelin#multiplayer--read-this
+    about: Multiplayer is early and has known limits. Check this before reporting a server issue.
+  - name: Problem with NullFrame Core
+    url: https://github.com/NullFrameHQ/NullFrame-Core/issues/new/choose
+    about: Native library crashes, library loading problems and Core API questions belong in the Core tracker.

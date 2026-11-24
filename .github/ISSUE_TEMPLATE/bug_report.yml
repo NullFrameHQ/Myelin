@@ -1,0 +1,141 @@
+name: Bug report
+description: Report a crash, incorrect terrain, multiplayer problem or slowdown
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this. Please search existing issues first, and fill in as much of the form as you can.
+
+  - type: dropdown
+    id: problem-type
+    attributes:
+      label: Type of problem
+      options:
+        - Crash or freeze
+        - Incorrect or missing terrain, blocks or biomes
+        - Slow loading or stuttering (performance)
+        - Multiplayer or server issue
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: How serious is this for you?
+      description: Your opinion helps us sort reports. The maintainer sets the final severity.
+      options:
+        - "S - Blocker: crash, freeze, corrupted world, or breaks a server"
+        - "A - Major: wrong terrain on a common setup, or a large slowdown"
+        - "B - Minor: rare case, visual problem, or a workaround exists"
+        - "C - Cosmetic: typo or small UI issue"
+    validations:
+      required: false
+
+  - type: input
+    id: myelin-version
+    attributes:
+      label: Myelin version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+
+  - type: input
+    id: core-version
+    attributes:
+      label: NullFrame Core version
+      placeholder: "0.1.1"
+    validations:
+      required: true
+
+  - type: input
+    id: minecraft-version
+    attributes:
+      label: Minecraft version
+      placeholder: "1.21.1"
+    validations:
+      required: true
+
+  - type: input
+    id: loader-version
+    attributes:
+      label: Fabric Loader and Fabric API versions
+      placeholder: "Loader 0.17.0, Fabric API 0.104.0+1.21.1"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Where did this happen?
+      options:
+        - Singleplayer
+        - Dedicated server (my own)
+        - Shared or hosted server
+    validations:
+      required: true
+
+  - type: input
+    id: system
+    attributes:
+      label: Operating system and CPU
+      description: Include the CPU model. For performance problems, please also say whether it supports AVX2 or AVX-512.
+      placeholder: "Windows 11, Intel Core i7-13650HX (AVX2 yes, AVX-512 no)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: mods
+    attributes:
+      label: Mods in your mods folder
+      description: Type the mods that were in your mods folder when this happened, one per line. Performance mods such as Sodium, Nvidium, ScalableLux or Krypton are especially useful to mention.
+      placeholder: |
+        Sodium 0.6.0
+        Nvidium 0.3.0
+        Myelin 0.1.0
+    validations:
+      required: false
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the problem and what you expected to happen instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Turn on Flight Mode
+        2. Fly north at about 800 blocks per second
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: performance
+    attributes:
+      label: Performance details
+      description: Only needed for slowdowns or stuttering. Include your render distance, flight speed, sampling step and worker threads, and paste the output of /myelin steps and /myelin cache if you can.
+      render: text
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or crash report
+      description: Attach latest.log or the crash report file if it is large. Paste the relevant part here if it is short.
+      render: text
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues and did not find this problem.
+          required: true
+        - label: I checked whether the problem still happens without the other mods listed above, or I explained why I could not.
+          required: true

@@ -1,0 +1,78 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out Myelin
+        uses: actions/checkout@v4
+        with:
+          path: myelin
+
+      # Myelin depends on one exact NullFrame Core version. Read it from
+      # build.gradle.kts so this workflow never needs editing when it changes.
+      # Core release tags are named mc1.21.1-v<version>.
+      - name: Find the NullFrame Core version Myelin needs
+        id: core
+        run: |
+          version=$(sed -n 's/.*nullframe-core:\([0-9][0-9A-Za-z.+-]*\).*/\1/p' myelin/build.gradle.kts | head -n 1)
+          if [ -z "$version" ]; then
+            echo "Could not find the nullframe-core version in myelin/build.gradle.kts" >&2
+            exit 1
+          fi
+          echo "NullFrame Core $version"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Check out NullFrame Core
+        uses: actions/checkout@v4
+        with:
+          repository: NullFrameHQ/NullFrame-Core
+          ref: mc1.21.1-v${{ steps.core.outputs.version }}
+          path: nullframe-core
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      # Core's normal build packages the native binaries that are already in
+      # the repository. It does not need CMake.
+      - name: Build NullFrame Core and publish it to Maven Local
+        working-directory: nullframe-core
+        run: |
+          chmod +x gradlew
+          ./gradlew build publishToMavenLocal
+
+      - name: Build Myelin
+        working-directory: myelin
+        run: |
+          chmod +x gradlew
+          ./gradlew build
+
+      - name: Upload Myelin jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: myelin
+          path: |
+            myelin/build/libs/*.jar
+            !myelin/build/libs/*-sources.jar
+          if-no-files-found: error
