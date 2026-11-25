@@ -64,7 +64,7 @@ These comparisons show terrain appearing on client's screen, so, it includes the
 
 In Singleplayer, my hardware, at approximately **785 blocks per second**, Myelin kept terrain visible ahead while vanilla Superflat fell behind.
 
-Myelin on my hardware tends to break at ~1300 blocks per second player speed, while superflat reaches only ~790. _See "Where is the bottleneck now?" below_.
+Myelin 0.1.1 on my hardware tends to break at ~4100 blocks per second player speed (it was ~1300 in 0.1.0), while superflat reaches only ~790. _See "Where is the bottleneck now?" below_.
 
 #### Myelin - 1× playback & Vanilla Superflat - 1× playback speed
 
@@ -178,6 +178,8 @@ Surface chunks are meant to be temporary and are not saved as permanent world ch
 
 That also avoids saving, compressing and writing every block of our temporary terrain to the SSD when players enable Flight Mode. Myelin also handles their cleanup, so unloaded Surface chunks can be deleted from RAM and chunk holders.
 
+Since 0.1.1, unfinished chunks around a flying player are also kept out of the save while Flight Mode is on. They are rebuilt from the seed when needed.
+
 When Flight Mode is turned off and those chunks have unloaded, Minecraft can generate the normal terrain again.
 
 ---
@@ -205,7 +207,9 @@ Installation requirements:
 - **Myelin**
 - **NullFrame Core**
 - **Fabric API** and **Fabric Loader**
-- **YetAnotherConfigLib (YACL)**
+- **YetAnotherConfigLib (YACL)**, on clients only, for the settings screen. Servers do not need it.
+
+**Quilt:** Myelin is a Fabric mod and also runs on Quilt Loader, which loads Fabric mods. It worked in testing with the same mods as on Fabric. Fabric is the primary platform. If you find a problem that only happens on Quilt, please say so in your report.
 
 ---
 
@@ -255,6 +259,13 @@ Meant for debugging.
 See information about important steps, for long they took and more. 
 
 You can reset step information with `/myelin steps reset`
+
+### /myelin saves
+
+Meant for debugging.
+Shows how many chunks were written to disk (by chunk status), how many Myelin kept out of the save, and how long saving took.
+
+You can reset the counters with `/myelin saves reset`.
 
 ### /myelin surface
 
