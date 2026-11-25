@@ -15,6 +15,7 @@ package com.me.nullframe.myelin.mixin;
 import com.me.nullframe.myelin.DimensionIds;
 import com.me.nullframe.myelin.client.MyelinClient;
 import com.me.nullframe.myelin.config.MyelinClientConfig;
+import com.me.nullframe.myelin.client.render.ReceivedChunkOutlineRenderer;
 import com.me.nullframe.myelin.client.render.SurfaceChunkRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -38,6 +39,24 @@ public abstract class ClientPlayNetworkHandlerMixin {
         if (packet.overlay()) {
             NetworkThreadUtils.forceMainThread(packet, (ClientPlayNetworkHandler) (Object) this, MinecraftClient.getInstance());
             if (MyelinClientConfig.getInstance().shouldHideHudMessage(packet.content().getString())) ci.cancel();
+        }
+    }
+
+    /**
+     * Debug overlay hook. The handler first runs on the network thread and is then re-run on the
+     * client thread, so record only on the client thread: once per packet, in packet order.
+     */
+    @Inject(method = "onChunkData", at = @At("HEAD"))
+    private void myelin$recordReceivedChunk(ChunkDataS2CPacket packet, CallbackInfo ci) {
+        if (MinecraftClient.getInstance().isOnThread()) {
+            ReceivedChunkOutlineRenderer.onChunkReceived(packet.getChunkX(), packet.getChunkZ());
+        }
+    }
+
+    @Inject(method = "onUnloadChunk", at = @At("HEAD"))
+    private void myelin$forgetReceivedChunk(UnloadChunkS2CPacket packet, CallbackInfo ci) {
+        if (MinecraftClient.getInstance().isOnThread()) {
+            ReceivedChunkOutlineRenderer.onChunkUnloaded(packet.pos().x, packet.pos().z);
         }
     }
 

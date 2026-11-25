@@ -13,6 +13,7 @@
 package com.me.nullframe.myelin.server;
 
 import com.me.nullframe.myelin.MyelinMod;
+import com.me.nullframe.myelin.server.diagnostics.SaveDiagnostics;
 
 import com.nullframe.core.StepTimings;
 
@@ -67,8 +68,25 @@ public class MyelinCommand {
             root.then(literal("cache")
                     .executes(ctx -> runCacheDiagnostics(ctx, false))
                     .then(literal("reset").executes(ctx -> runCacheDiagnostics(ctx, true))));
+            root.then(literal("saves")
+                    .executes(ctx -> runSaveDiagnostics(ctx, false))
+                    .then(literal("reset").executes(ctx -> runSaveDiagnostics(ctx, true))));
             dispatcher.register(root);
         });
+    }
+
+    private static int runSaveDiagnostics(CommandContext<ServerCommandSource> ctx, boolean reset) {
+        if (!checkEnabled(ctx.getSource())) return 0;
+        if (reset) {
+            SaveDiagnostics.reset();
+            ctx.getSource().sendFeedback(() -> Text.literal(
+                    "Myelin: save counters reset. Fly into fresh terrain, then run /myelin saves."), false);
+        } else {
+            String summary = SaveDiagnostics.summary();
+            LOGGER.info(summary);
+            ctx.getSource().sendFeedback(() -> Text.literal(summary), false);
+        }
+        return 1;
     }
 
     private static int runCacheDiagnostics(CommandContext<ServerCommandSource> ctx, boolean reset) {

@@ -141,6 +141,16 @@ public final class MyelinSettingsScreen {
                 .controller(TickBoxControllerBuilder::create)
                 .build();
 
+        Option<Boolean> receivedChunks = Option.<Boolean>createBuilder()
+                .name(Text.literal("Pre-render received chunks"))
+                .description(description("Debugging aid. Draws a red outline around every chunk this client has received from the server, " +
+                        "at sea level and visible through terrain. Compare it with the chunks actually rendered: " +
+                        "if the outline keeps up but terrain lags, the bottleneck is client-side (installing, lighting or meshing). " +
+                        "If the outline lags too, it is on the server or network side. Only chunks received after enabling are shown."))
+                .binding(defaults.showReceivedChunks, () -> config.showReceivedChunks, value -> config.showReceivedChunks = value)
+                .controller(TickBoxControllerBuilder::create)
+                .build();
+
         Option<Integer> region = Option.<Integer>createBuilder()
                 .name(Text.literal("Region Path"))
                 .description(description("Choose regional terrain generation. Auto uses it through 1:32, On keeps it enabled, and Off uses the per-chunk path. " +
@@ -158,7 +168,7 @@ public final class MyelinSettingsScreen {
                         .group(group("Quality", terrain, correction, biomes))
                         .group(group("Controls", flight, keybind))
                         .group(group("Information", hud, messages))
-                        .group(group("Advanced", cachedTerrain, region))
+                        .group(group("Advanced", cachedTerrain, region, receivedChunks))
                         .build())
                 .save(() -> {
                     config.save();

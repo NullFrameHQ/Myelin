@@ -14,6 +14,7 @@ package com.me.nullframe.myelin.mixin;
 
 import com.me.nullframe.myelin.server.MyelinChunkManager;
 import com.me.nullframe.myelin.MyelinMod;
+import com.me.nullframe.myelin.server.diagnostics.SaveDiagnostics;
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 import net.minecraft.server.world.ChunkHolder;
 import net.minecraft.server.world.ServerChunkLoadingManager;
@@ -43,20 +44,43 @@ public abstract class ServerChunkLoadingManagerMixin {
 
     // Bypassing chunk saves to disk. Should protect users' worlds to not corrupt
 
+    // Start time of the save in progress, for /myelin saves. Zero when none is running.
+    private long myelin$saveStartNanos;
+
     @Inject(method = "save(Lnet/minecraft/world/chunk/Chunk;)Z", at = @At("HEAD"), cancellable = true)
     private void myelin$skipSavingTemporaryTopOnlyChunks(Chunk chunk,
                                                              CallbackInfoReturnable<Boolean> cir) {
+        // Vanilla returns early when there is nothing to write. Only count real writes.
+        boolean realWrite = chunk != null && chunk.needsSaving();
+
         MyelinChunkManager manager = MyelinMod.getChunkManager();
-        if (manager == null) {
-            return;
+        if (manager != null) {
+            if (manager.shouldSkipSavingTemporaryTopOnlyChunk(world, chunk)) {
+                if (realWrite) SaveDiagnostics.recordSkippedTracked();
+                chunk.setNeedsSaving(false);
+                cir.setReturnValue(true);
+                return;
+            }
+            if (manager.shouldSkipSavingUnfinishedChunk(world, chunk)) {
+                if (realWrite) SaveDiagnostics.recordSkippedPartial();
+                chunk.setNeedsSaving(false);
+                cir.setReturnValue(true);
+                return;
+            }
         }
 
-        if (!manager.shouldSkipSavingTemporaryTopOnlyChunk(world, chunk)) {
-            return;
+        if (realWrite) {
+            SaveDiagnostics.recordWrite(chunk.getStatus().toString());
+            myelin$saveStartNanos = System.nanoTime();
         }
+    }
 
-        chunk.setNeedsSaving(false);
-        cir.setReturnValue(true);
+    @Inject(method = "save(Lnet/minecraft/world/chunk/Chunk;)Z", at = @At("RETURN"))
+    private void myelin$recordSaveTime(Chunk chunk, CallbackInfoReturnable<Boolean> cir) {
+        if (myelin$saveStartNanos != 0L) {
+            SaveDiagnostics.recordWriteNanos(System.nanoTime() - myelin$saveStartNanos);
+            myelin$saveStartNanos = 0L;
+        }
     }
 
     // ════════════════════════════════════════════════════════════════════════════

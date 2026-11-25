@@ -31,7 +31,7 @@ will fail. Run both tasks:
 On Linux/macOS, use `./gradlew` instead of `.\gradlew.bat` (run
 `chmod +x gradlew` if the executable bit was not preserved).
 
-The distributable mod is `build/libs/myelin-0.1.0.jar`. Install NullFrame Core
+The distributable mod is `build/libs/myelin-0.1.1.jar`. Install NullFrame Core
 as a separate mod alongside it; Core is not bundled into Myelin's JAR.
 
 Development runs use `runClient` and `runServer`. The source repository does

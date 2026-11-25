@@ -372,6 +372,18 @@ public class MyelinChunkManager {
         return myelinPlayerManager.shouldUseTopOnlyGeneration(world, chunkX, chunkZ);
     }
 
+    /**
+     * While a player is in Flight Mode, generation skips most steps, so unfinished
+     * (proto) chunks around the player are only scaffolding. Vanilla would still
+     * write them to the region files. They are rebuilt from the seed when needed,
+     * so they are never saved. Finished chunks are left to the normal rules.
+     */
+    public boolean shouldSkipSavingUnfinishedChunk(ServerWorld world, Chunk chunk) {
+        if (chunk == null) return false;
+        if (chunk.getStatus().getChunkType() != net.minecraft.world.chunk.ChunkType.PROTOCHUNK) return false;
+        return shouldUseTopOnlyGeneration(world, chunk.getPos().x, chunk.getPos().z);
+    }
+
     /** Waits for a snapshot and builds the Surface chunk before returning. */
     public Chunk populateTopOnlyChunkSync(ServerWorld world, Chunk chunk) {
         SnapshotLookup lookup = getImmediateSurfaceSnapshot(world, chunk.getPos().x, chunk.getPos().z);

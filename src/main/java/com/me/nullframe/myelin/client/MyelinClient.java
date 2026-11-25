@@ -17,6 +17,7 @@ import com.me.nullframe.myelin.MyelinMod;
 import com.me.nullframe.myelin.client.gui.MyelinSettingsScreen;
 import com.me.nullframe.myelin.client.render.CachedTerrainPreviewRenderer;
 import com.me.nullframe.myelin.client.render.MyelinHudRenderer;
+import com.me.nullframe.myelin.client.render.ReceivedChunkOutlineRenderer;
 import com.me.nullframe.myelin.client.render.SurfaceChunkRenderer;
 import com.me.nullframe.myelin.config.MyelinClientConfig;
 
@@ -144,6 +145,7 @@ public class MyelinClient implements ClientModInitializer {
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> client.execute(() -> {
             SurfaceChunkRenderer.clearAll();
             CachedTerrainPreviewRenderer.clearCache();
+            ReceivedChunkOutlineRenderer.clear();
             surfaceModeEnabled = false;
             serverMyelinEnabled = false;
             serverStateReceived = false;
@@ -161,6 +163,7 @@ public class MyelinClient implements ClientModInitializer {
         if (!MyelinMod.isEnabled()) return;
 
         CachedTerrainPreviewRenderer.register();
+        ReceivedChunkOutlineRenderer.register();
         HudRenderCallback.EVENT.register(new MyelinHudRenderer());
 
         // Keybinds

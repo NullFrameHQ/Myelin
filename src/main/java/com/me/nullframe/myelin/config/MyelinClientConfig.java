@@ -33,6 +33,8 @@ public class MyelinClientConfig {
     /** Hide Myelin's action-bar notifications without hiding its HUD panel or chat. */
     public boolean disableHudMessages = false;
     public boolean usePreviewRenderer = false;
+    /** Debug overlay: outlines every chunk whose ChunkDataS2CPacket the client has received. */
+    public boolean showReceivedChunks = false;
     /** Detail correction: 0 = Auto, 1 = On, 2 = Off. Requires terrain sampling 1:16+. */
     public int detailCorrectionMode = 0;
     /** Legacy saved switch. Off means 1:1; choosing a level in the GUI enables it. */
