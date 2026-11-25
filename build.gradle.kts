@@ -38,7 +38,7 @@ java {
     withSourcesJar()
 }
 
-val myelinLicenseFiles = listOf("LICENSE.md")
+val myelinLicenseFiles = listOf("LICENSE")
 tasks.named<Jar>("jar") {
     from(myelinLicenseFiles)
 }
