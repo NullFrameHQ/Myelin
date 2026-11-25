@@ -32,7 +32,7 @@ public abstract class GameMenuScreenMixin extends Screen {
 
     @Inject(method = "init", at = @At("TAIL"))
     private void myelin$addSettingsButton(CallbackInfo ci) {
-        if (!MyelinClient.isAvailable()) return;
+        if (!MyelinClient.isAvailable() || !MyelinClient.isSettingsScreenAvailable()) return;
         // Add "Myelin Settings" to the bottom-left corner to avoid overlapping vanilla buttons
         this.addDrawableChild(ButtonWidget.builder(
                 Text.literal("§bMyelin Settings"),

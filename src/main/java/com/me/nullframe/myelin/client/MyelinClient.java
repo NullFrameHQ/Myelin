@@ -87,6 +87,13 @@ public class MyelinClient implements ClientModInitializer {
     /** Returns the handshake seed, or 0 before one has arrived. */
     public static long getServerWorldSeed() { return serverWorldSeed; }
 
+    private static final String YACL_MOD_ID = "yet_another_config_lib_v3";
+
+    /** The settings screen is built with YetAnotherConfigLib, which is optional. */
+    public static boolean isSettingsScreenAvailable() {
+        return FabricLoader.getInstance().isModLoaded(YACL_MOD_ID);
+    }
+
     public static boolean isAvailable() {
         return MyelinMod.isEnabled() && serverMyelinEnabled;
     }
@@ -207,7 +214,12 @@ public class MyelinClient implements ClientModInitializer {
             if (settingsKey != null) {
                 while (settingsKey.wasPressed()) {
                     if (isAvailable() && client.player != null) {
-                        client.setScreen(MyelinSettingsScreen.createScreen(null));
+                        if (isSettingsScreenAvailable()) {
+                            client.setScreen(MyelinSettingsScreen.createScreen(null));
+                        } else {
+                            client.player.sendMessage(Text.literal(
+                                    "Myelin: install YetAnotherConfigLib 3.8.1 or newer to open the settings screen."), true);
+                        }
                     }
                 }
             }
